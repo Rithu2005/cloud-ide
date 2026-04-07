@@ -5,21 +5,22 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat '.\\mvnw.cmd clean package'
+                sh 'chmod +x mvnw'
+                sh './mvnw clean package'
             }
         }
 
         stage('Docker Build') {
             steps {
-                bat 'docker build -t codeexec:v1 .'
+                sh 'docker build -t codeexec:v1 .'
             }
         }
 
         stage('Run Container') {
             steps {
-                bat 'docker stop codeexec || exit 0'
-                bat 'docker rm codeexec || exit 0'
-                bat 'docker run -d -p 8080:8080 --name codeexec codeexec:v1'
+                sh 'docker stop codeexec || true'
+                sh 'docker rm codeexec || true'
+                sh 'docker run -d -p 8080:8080 --name codeexec codeexec:v1'
             }
         }
     }
