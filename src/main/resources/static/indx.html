@@ -1,0 +1,613 @@
+<!--&lt;!&ndash;<!DOCTYPE html>&ndash;&gt;-->
+<!--&lt;!&ndash;<html>&ndash;&gt;-->
+<!--&lt;!&ndash;<head>&ndash;&gt;-->
+<!--&lt;!&ndash;    <title>Cloud IDE</title>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; Monaco Editor &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <style>&ndash;&gt;-->
+<!--&lt;!&ndash;        body {&ndash;&gt;-->
+<!--&lt;!&ndash;            margin: 0;&ndash;&gt;-->
+<!--&lt;!&ndash;            background: #020617;&ndash;&gt;-->
+<!--&lt;!&ndash;            color: white;&ndash;&gt;-->
+<!--&lt;!&ndash;            font-family: sans-serif;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        header {&ndash;&gt;-->
+<!--&lt;!&ndash;            display: flex;&ndash;&gt;-->
+<!--&lt;!&ndash;            justify-content: space-between;&ndash;&gt;-->
+<!--&lt;!&ndash;            padding: 10px 20px;&ndash;&gt;-->
+<!--&lt;!&ndash;            background: #020617;&ndash;&gt;-->
+<!--&lt;!&ndash;            border-bottom: 1px solid #111;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        #container {&ndash;&gt;-->
+<!--&lt;!&ndash;            display: flex;&ndash;&gt;-->
+<!--&lt;!&ndash;            height: 92vh;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        /* LEFT FILE PANEL */&ndash;&gt;-->
+<!--&lt;!&ndash;        #sidebar {&ndash;&gt;-->
+<!--&lt;!&ndash;            width: 200px;&ndash;&gt;-->
+<!--&lt;!&ndash;            background: #020617;&ndash;&gt;-->
+<!--&lt;!&ndash;            padding: 15px;&ndash;&gt;-->
+<!--&lt;!&ndash;            border-right: 1px solid #111;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        #sidebar h3 {&ndash;&gt;-->
+<!--&lt;!&ndash;            margin-top: 0;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        #sidebar p {&ndash;&gt;-->
+<!--&lt;!&ndash;            color: #ccc;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        /* EDITOR */&ndash;&gt;-->
+<!--&lt;!&ndash;        #editor {&ndash;&gt;-->
+<!--&lt;!&ndash;            flex: 1;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        /* RIGHT PANEL */&ndash;&gt;-->
+<!--&lt;!&ndash;        #right {&ndash;&gt;-->
+<!--&lt;!&ndash;            width: 320px;&ndash;&gt;-->
+<!--&lt;!&ndash;            display: flex;&ndash;&gt;-->
+<!--&lt;!&ndash;            flex-direction: column;&ndash;&gt;-->
+<!--&lt;!&ndash;            border-left: 1px solid #111;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        textarea {&ndash;&gt;-->
+<!--&lt;!&ndash;            flex: 1;&ndash;&gt;-->
+<!--&lt;!&ndash;            background: black;&ndash;&gt;-->
+<!--&lt;!&ndash;            color: #22c55e;&ndash;&gt;-->
+<!--&lt;!&ndash;            border: none;&ndash;&gt;-->
+<!--&lt;!&ndash;            padding: 10px;&ndash;&gt;-->
+<!--&lt;!&ndash;            resize: none;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        textarea::placeholder {&ndash;&gt;-->
+<!--&lt;!&ndash;            color: #555;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        /* BUTTONS */&ndash;&gt;-->
+<!--&lt;!&ndash;        .btn {&ndash;&gt;-->
+<!--&lt;!&ndash;            background: #22c55e;&ndash;&gt;-->
+<!--&lt;!&ndash;            border: none;&ndash;&gt;-->
+<!--&lt;!&ndash;            padding: 6px 12px;&ndash;&gt;-->
+<!--&lt;!&ndash;            margin-left: 10px;&ndash;&gt;-->
+<!--&lt;!&ndash;            border-radius: 6px;&ndash;&gt;-->
+<!--&lt;!&ndash;            cursor: pointer;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        select {&ndash;&gt;-->
+<!--&lt;!&ndash;            padding: 6px;&ndash;&gt;-->
+<!--&lt;!&ndash;            border-radius: 6px;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--&lt;!&ndash;    </style>&ndash;&gt;-->
+<!--&lt;!&ndash;</head>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<body>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<header>&ndash;&gt;-->
+<!--&lt;!&ndash;    🚀 Cloud IDE&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div>&ndash;&gt;-->
+<!--&lt;!&ndash;        <select id="lang" onchange="changeLang()">&ndash;&gt;-->
+<!--&lt;!&ndash;            <option value="java">Java</option>&ndash;&gt;-->
+<!--&lt;!&ndash;            <option value="python">Python</option>&ndash;&gt;-->
+<!--&lt;!&ndash;            <option value="cpp">C++</option>&ndash;&gt;-->
+<!--&lt;!&ndash;            <option value="c">C</option>&ndash;&gt;-->
+<!--&lt;!&ndash;            <option value="js">JavaScript</option>&ndash;&gt;-->
+<!--&lt;!&ndash;        </select>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <button class="btn" onclick="runCode()">Run</button>&ndash;&gt;-->
+<!--&lt;!&ndash;        <button class="btn" onclick="downloadCode()">Download</button>&ndash;&gt;-->
+<!--&lt;!&ndash;        <button class="btn" onclick="shareCode()">Share</button>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;</header>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<div id="container">&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; LEFT &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <div id="sidebar">&ndash;&gt;-->
+<!--&lt;!&ndash;        <h3>Files</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;        <p id="fileName">Main.java</p>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; EDITOR &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <div id="editor"></div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    &lt;!&ndash; RIGHT &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;    <div id="right">&ndash;&gt;-->
+<!--&lt;!&ndash;        <textarea id="input" placeholder="Input..."></textarea>&ndash;&gt;-->
+<!--&lt;!&ndash;        <textarea id="output" placeholder="Output..."></textarea>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;<script>&ndash;&gt;-->
+<!--&lt;!&ndash;    let editor;&ndash;&gt;-->
+
+<!--&lt;!&ndash;    require.config({&ndash;&gt;-->
+<!--&lt;!&ndash;        paths: {&ndash;&gt;-->
+<!--&lt;!&ndash;            vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs"&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--&lt;!&ndash;    });&ndash;&gt;-->
+
+<!--&lt;!&ndash;    require(["vs/editor/editor.main"], function () {&ndash;&gt;-->
+<!--&lt;!&ndash;        editor = monaco.editor.create(document.getElementById("editor"), {&ndash;&gt;-->
+<!--&lt;!&ndash;            value: getTemplate("java"),&ndash;&gt;-->
+<!--&lt;!&ndash;            language: "java",&ndash;&gt;-->
+<!--&lt;!&ndash;            theme: "vs-dark"&ndash;&gt;-->
+<!--&lt;!&ndash;        });&ndash;&gt;-->
+<!--&lt;!&ndash;    });&ndash;&gt;-->
+
+<!--&lt;!&ndash;    /* =========================&ndash;&gt;-->
+<!--&lt;!&ndash;       LANGUAGE TEMPLATES&ndash;&gt;-->
+<!--&lt;!&ndash;    ========================= */&ndash;&gt;-->
+<!--&lt;!&ndash;    function getTemplate(lang) {&ndash;&gt;-->
+<!--&lt;!&ndash;        switch (lang) {&ndash;&gt;-->
+<!--&lt;!&ndash;            case "java":&ndash;&gt;-->
+<!--&lt;!&ndash;                return `import java.util.*;&ndash;&gt;-->
+<!--&lt;!&ndash;    public class Main {&ndash;&gt;-->
+<!--&lt;!&ndash;        public static void main(String[] args) {&ndash;&gt;-->
+<!--&lt;!&ndash;            System.out.println("Hello Java");&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--&lt;!&ndash;    }`;&ndash;&gt;-->
+<!--&lt;!&ndash;            case "python":&ndash;&gt;-->
+<!--&lt;!&ndash;                return `print("Hello Python")`;&ndash;&gt;-->
+
+<!--&lt;!&ndash;            case "cpp":&ndash;&gt;-->
+<!--&lt;!&ndash;                return `#include <iostream>&ndash;&gt;-->
+<!--&lt;!&ndash;    using namespace std;&ndash;&gt;-->
+<!--&lt;!&ndash;    int main(){&ndash;&gt;-->
+<!--&lt;!&ndash;        cout << "Hello C++";&ndash;&gt;-->
+<!--&lt;!&ndash;        return 0;&ndash;&gt;-->
+<!--&lt;!&ndash;    }`;&ndash;&gt;-->
+
+<!--&lt;!&ndash;            case "c":&ndash;&gt;-->
+<!--&lt;!&ndash;                return `#include <stdio.h>&ndash;&gt;-->
+<!--&lt;!&ndash;    int main(){&ndash;&gt;-->
+<!--&lt;!&ndash;        printf("Hello C");&ndash;&gt;-->
+<!--&lt;!&ndash;        return 0;&ndash;&gt;-->
+<!--&lt;!&ndash;    }`;&ndash;&gt;-->
+
+<!--&lt;!&ndash;            case "js":&ndash;&gt;-->
+<!--&lt;!&ndash;                return `console.log("Hello JavaScript");`;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--&lt;!&ndash;    }&ndash;&gt;-->
+
+<!--&lt;!&ndash;    /* =========================&ndash;&gt;-->
+<!--&lt;!&ndash;       CHANGE LANGUAGE&ndash;&gt;-->
+<!--&lt;!&ndash;    ========================= */&ndash;&gt;-->
+<!--&lt;!&ndash;    function changeLang() {&ndash;&gt;-->
+<!--&lt;!&ndash;        let lang = document.getElementById("lang").value;&ndash;&gt;-->
+
+<!--&lt;!&ndash;        const map = {&ndash;&gt;-->
+<!--&lt;!&ndash;            java: "java",&ndash;&gt;-->
+<!--&lt;!&ndash;            python: "python",&ndash;&gt;-->
+<!--&lt;!&ndash;            cpp: "cpp",&ndash;&gt;-->
+<!--&lt;!&ndash;            c: "c",&ndash;&gt;-->
+<!--&lt;!&ndash;            js: "javascript"&ndash;&gt;-->
+<!--&lt;!&ndash;        };&ndash;&gt;-->
+
+<!--&lt;!&ndash;        monaco.editor.setModelLanguage(editor.getModel(), map[lang]);&ndash;&gt;-->
+<!--&lt;!&ndash;        editor.setValue(getTemplate(lang));&ndash;&gt;-->
+
+<!--&lt;!&ndash;        // update file name&ndash;&gt;-->
+<!--&lt;!&ndash;        const fileMap = {&ndash;&gt;-->
+<!--&lt;!&ndash;            java: "Main.java",&ndash;&gt;-->
+<!--&lt;!&ndash;            python: "main.py",&ndash;&gt;-->
+<!--&lt;!&ndash;            cpp: "main.cpp",&ndash;&gt;-->
+<!--&lt;!&ndash;            c: "main.c",&ndash;&gt;-->
+<!--&lt;!&ndash;            js: "main.js"&ndash;&gt;-->
+<!--&lt;!&ndash;        };&ndash;&gt;-->
+
+<!--&lt;!&ndash;        document.getElementById("fileName").innerText = fileMap[lang];&ndash;&gt;-->
+<!--&lt;!&ndash;    }&ndash;&gt;-->
+
+<!--&lt;!&ndash;    /* =========================&ndash;&gt;-->
+<!--&lt;!&ndash;       RUN CODE&ndash;&gt;-->
+<!--&lt;!&ndash;    ========================= */&ndash;&gt;-->
+<!--&lt;!&ndash;    async function runCode() {&ndash;&gt;-->
+<!--&lt;!&ndash;        const res = await fetch("/execute", {&ndash;&gt;-->
+<!--&lt;!&ndash;            method: "POST",&ndash;&gt;-->
+<!--&lt;!&ndash;            headers: { "Content-Type": "application/json" },&ndash;&gt;-->
+<!--&lt;!&ndash;            body: JSON.stringify({&ndash;&gt;-->
+<!--&lt;!&ndash;                code: editor.getValue(),&ndash;&gt;-->
+<!--&lt;!&ndash;                input: document.getElementById("input").value,&ndash;&gt;-->
+<!--&lt;!&ndash;                language: document.getElementById("lang").value&ndash;&gt;-->
+<!--&lt;!&ndash;            })&ndash;&gt;-->
+<!--&lt;!&ndash;        });&ndash;&gt;-->
+
+<!--&lt;!&ndash;        const text = await res.text();&ndash;&gt;-->
+<!--&lt;!&ndash;        document.getElementById("output").value = text;&ndash;&gt;-->
+<!--&lt;!&ndash;    }&ndash;&gt;-->
+
+<!--&lt;!&ndash;    /* =========================&ndash;&gt;-->
+<!--&lt;!&ndash;       DOWNLOAD&ndash;&gt;-->
+<!--&lt;!&ndash;    ========================= */&ndash;&gt;-->
+<!--&lt;!&ndash;    function downloadCode() {&ndash;&gt;-->
+<!--&lt;!&ndash;        const code = editor.getValue();&ndash;&gt;-->
+<!--&lt;!&ndash;        const lang = document.getElementById("lang").value;&ndash;&gt;-->
+
+<!--&lt;!&ndash;        const ext = {&ndash;&gt;-->
+<!--&lt;!&ndash;            java: "java",&ndash;&gt;-->
+<!--&lt;!&ndash;            python: "py",&ndash;&gt;-->
+<!--&lt;!&ndash;            cpp: "cpp",&ndash;&gt;-->
+<!--&lt;!&ndash;            c: "c",&ndash;&gt;-->
+<!--&lt;!&ndash;            js: "js"&ndash;&gt;-->
+<!--&lt;!&ndash;        };&ndash;&gt;-->
+
+<!--&lt;!&ndash;        const blob = new Blob([code], { type: "text/plain" });&ndash;&gt;-->
+<!--&lt;!&ndash;        const a = document.createElement("a");&ndash;&gt;-->
+
+<!--&lt;!&ndash;        a.href = URL.createObjectURL(blob);&ndash;&gt;-->
+<!--&lt;!&ndash;        a.download = "code." + ext[lang];&ndash;&gt;-->
+<!--&lt;!&ndash;        a.click();&ndash;&gt;-->
+<!--&lt;!&ndash;    }&ndash;&gt;-->
+
+<!--&lt;!&ndash;    /* =========================&ndash;&gt;-->
+<!--&lt;!&ndash;       SHARE&ndash;&gt;-->
+<!--&lt;!&ndash;    ========================= */&ndash;&gt;-->
+<!--&lt;!&ndash;    function shareCode() {&ndash;&gt;-->
+<!--&lt;!&ndash;        const code = btoa(editor.getValue());&ndash;&gt;-->
+<!--&lt;!&ndash;        const url = window.location.origin + "?code=" + code;&ndash;&gt;-->
+<!--&lt;!&ndash;        prompt("Copy this link:", url);&ndash;&gt;-->
+<!--&lt;!&ndash;    }&ndash;&gt;-->
+
+<!--&lt;!&ndash;    /* =========================&ndash;&gt;-->
+<!--&lt;!&ndash;       LOAD SHARED CODE&ndash;&gt;-->
+<!--&lt;!&ndash;    ========================= */&ndash;&gt;-->
+<!--&lt;!&ndash;    window.onload = function () {&ndash;&gt;-->
+<!--&lt;!&ndash;        const params = new URLSearchParams(window.location.search);&ndash;&gt;-->
+<!--&lt;!&ndash;        const code = params.get("code");&ndash;&gt;-->
+
+<!--&lt;!&ndash;        if (code) {&ndash;&gt;-->
+<!--&lt;!&ndash;            editor.setValue(atob(code));&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--&lt;!&ndash;    };&ndash;&gt;-->
+<!--&lt;!&ndash;</script>&ndash;&gt;-->
+
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Cloud IDE</title>-->
+
+<!--    &lt;!&ndash; Monaco Editor &ndash;&gt;-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>-->
+
+<!--    <style>-->
+<!--        body {-->
+<!--            margin: 0;-->
+<!--            background: #020617;-->
+<!--            color: white;-->
+<!--            font-family: sans-serif;-->
+<!--        }-->
+
+<!--        header {-->
+<!--            display: flex;-->
+<!--            justify-content: space-between;-->
+<!--            padding: 10px 20px;-->
+<!--            background: #020617;-->
+<!--            border-bottom: 1px solid #111;-->
+<!--        }-->
+
+<!--        #container {-->
+<!--            display: flex;-->
+<!--            height: 92vh;-->
+<!--        }-->
+
+<!--        /* Sidebar */-->
+<!--        #sidebar {-->
+<!--            width: 200px;-->
+<!--            padding: 15px;-->
+<!--            border-right: 1px solid #111;-->
+<!--        }-->
+
+<!--        /* TOP TABS */-->
+<!--        #topTabs {-->
+<!--            display: flex;-->
+<!--            background: #020617;-->
+<!--            border-bottom: 1px solid #111;-->
+<!--            height: 40px;-->
+<!--            align-items: center;-->
+<!--            overflow-x: auto;-->
+<!--        }-->
+
+<!--        .tab {-->
+<!--            padding: 8px 16px;-->
+<!--            cursor: pointer;-->
+<!--            border-right: 1px solid #111;-->
+<!--            color: #aaa;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 6px;-->
+<!--        }-->
+
+<!--        .tab.active {-->
+<!--            background: #0f172a;-->
+<!--            color: #22c55e;-->
+<!--        }-->
+
+<!--        .tab:hover {-->
+<!--            background: #111827;-->
+<!--        }-->
+
+<!--        /* Editor */-->
+<!--        #editor {-->
+<!--            flex: 1;-->
+<!--        }-->
+
+<!--        /* Right panel */-->
+<!--        #right {-->
+<!--            width: 320px;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--            border-left: 1px solid #111;-->
+<!--        }-->
+
+<!--        textarea {-->
+<!--            flex: 1;-->
+<!--            background: black;-->
+<!--            color: #22c55e;-->
+<!--            border: none;-->
+<!--            padding: 10px;-->
+<!--            resize: none;-->
+<!--        }-->
+
+<!--        .btn {-->
+<!--            background: #22c55e;-->
+<!--            border: none;-->
+<!--            padding: 6px 12px;-->
+<!--            margin-left: 10px;-->
+<!--            border-radius: 6px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        select {-->
+<!--            padding: 6px;-->
+<!--            border-radius: 6px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<header>-->
+<!--    🚀 Cloud Code Execution Platform-->
+
+<!--    <div>-->
+<!--        <select id="lang" onchange="changeLang()">-->
+<!--            <option value="java">Java</option>-->
+<!--            <option value="python">Python</option>-->
+<!--            <option value="cpp">C++</option>-->
+<!--            <option value="c">C</option>-->
+<!--            <option value="js">JavaScript</option>-->
+<!--        </select>-->
+
+<!--        <button class="btn" onclick="runCode()">Run</button>-->
+<!--        <button class="btn" onclick="downloadCode()">Download</button>-->
+<!--        <button class="btn" onclick="shareCode()">Share</button>-->
+<!--        <button class="btn" onclick="newFile()">New File</button>-->
+<!--    </div>-->
+<!--</header>-->
+
+<!--<div id="container">-->
+
+<!--    &lt;!&ndash; LEFT &ndash;&gt;-->
+<!--    <div id="sidebar">-->
+<!--        <h3>Files</h3>-->
+<!--        <p>Open files appear as tabs above 👆</p>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; CENTER &ndash;&gt;-->
+<!--    <div style="flex:1; display:flex; flex-direction:column;">-->
+<!--        <div id="topTabs"></div>-->
+<!--        <div id="editor"></div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; RIGHT &ndash;&gt;-->
+<!--    <div id="right">-->
+<!--        <textarea id="input" placeholder="Enter input..."></textarea>-->
+<!--        <textarea id="output" placeholder="Output..." readonly></textarea>-->
+<!--    </div>-->
+
+<!--</div>-->
+
+<!--<script>-->
+<!--    let editor;-->
+<!--    let files = {};-->
+<!--    let currentFile = "";-->
+
+<!--    /* =========================-->
+<!--       MONACO INIT-->
+<!--    ========================= */-->
+<!--    require.config({-->
+<!--        paths: { vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs" }-->
+<!--    });-->
+
+<!--    require(["vs/editor/editor.main"], function () {-->
+<!--        editor = monaco.editor.create(document.getElementById("editor"), {-->
+<!--            value: "",-->
+<!--            language: "java",-->
+<!--            theme: "vs-dark"-->
+<!--        });-->
+
+<!--        createFile("Main.java", getTemplate("java"));-->
+<!--    });-->
+
+<!--    /* =========================-->
+<!--       TEMPLATES-->
+<!--    ========================= */-->
+<!--    function getTemplate(lang) {-->
+<!--        switch (lang) {-->
+<!--            case "java":-->
+<!--                return `import java.util.*;-->
+<!--    public class Main {-->
+<!--        public static void main(String[] args) {-->
+<!--            System.out.println("Hello Java");-->
+<!--        }-->
+<!--    }`;-->
+<!--            case "python":-->
+<!--                return `print("Hello Python")`;-->
+<!--            case "cpp":-->
+<!--                return `#include <iostream>-->
+<!--    using namespace std;-->
+<!--    int main(){-->
+<!--        cout << "Hello C++";-->
+<!--        return 0;-->
+<!--    }`;-->
+<!--            case "c":-->
+<!--                return `#include <stdio.h>-->
+<!--    int main(){-->
+<!--        printf("Hello C");-->
+<!--        return 0;-->
+<!--    }`;-->
+<!--            case "js":-->
+<!--                return `console.log("Hello JavaScript");`;-->
+<!--        }-->
+<!--    }-->
+
+<!--    /* =========================-->
+<!--       FILE + TABS-->
+<!--    ========================= */-->
+<!--    function createFile(name, content="") {-->
+<!--        files[name] = content;-->
+<!--        currentFile = name;-->
+<!--        renderTabs();-->
+<!--        editor.setValue(content);-->
+<!--    }-->
+
+<!--    function renderTabs() {-->
+<!--        const tabs = document.getElementById("topTabs");-->
+<!--        tabs.innerHTML = "";-->
+
+<!--        for (let file in files) {-->
+<!--            const tab = document.createElement("div");-->
+<!--            tab.className = "tab" + (file === currentFile ? " active" : "");-->
+
+<!--            tab.innerHTML = `📄 ${file}`;-->
+
+<!--            tab.onclick = () => switchFile(file);-->
+
+<!--            tabs.appendChild(tab);-->
+<!--        }-->
+<!--    }-->
+
+<!--    function switchFile(name) {-->
+<!--        files[currentFile] = editor.getValue();-->
+<!--        currentFile = name;-->
+<!--        editor.setValue(files[name]);-->
+<!--        renderTabs();-->
+<!--    }-->
+
+<!--    /* =========================-->
+<!--       NEW FILE-->
+<!--    ========================= */-->
+<!--    function newFile() {-->
+<!--        let name = prompt("Enter file name:");-->
+<!--        if (!name) return;-->
+
+<!--        createFile(name, "");-->
+<!--    }-->
+
+<!--    /* =========================-->
+<!--       LANGUAGE SWITCH-->
+<!--    ========================= */-->
+<!--    function changeLang() {-->
+<!--        let lang = document.getElementById("lang").value;-->
+
+<!--        const map = {-->
+<!--            java: "java",-->
+<!--            python: "python",-->
+<!--            cpp: "cpp",-->
+<!--            c: "c",-->
+<!--            js: "javascript"-->
+<!--        };-->
+
+<!--        const fileMap = {-->
+<!--            java: "Main.java",-->
+<!--            python: "main.py",-->
+<!--            cpp: "main.cpp",-->
+<!--            c: "main.c",-->
+<!--            js: "main.js"-->
+<!--        };-->
+
+<!--        const fileName = fileMap[lang];-->
+
+<!--        if (!files[fileName]) {-->
+<!--            createFile(fileName, getTemplate(lang));-->
+<!--        } else {-->
+<!--            switchFile(fileName);-->
+<!--        }-->
+
+<!--        monaco.editor.setModelLanguage(editor.getModel(), map[lang]);-->
+<!--    }-->
+
+<!--    /* =========================-->
+<!--       RUN CODE-->
+<!--    ========================= */-->
+<!--    async function runCode() {-->
+<!--        files[currentFile] = editor.getValue();-->
+
+<!--        document.getElementById("output").value = "⏳ Running...";-->
+
+<!--        try {-->
+<!--            const res = await fetch("/execute", {-->
+<!--                method: "POST",-->
+<!--                headers: {"Content-Type":"application/json"},-->
+<!--                body: JSON.stringify({-->
+<!--                    code: files[currentFile],-->
+<!--                    input: document.getElementById("input").value,-->
+<!--                    language: document.getElementById("lang").value-->
+<!--                })-->
+<!--            });-->
+
+<!--            const text = await res.text();-->
+<!--            document.getElementById("output").value = text;-->
+
+<!--        } catch {-->
+<!--            document.getElementById("output").value = "❌ Backend not reachable";-->
+<!--        }-->
+<!--    }-->
+
+<!--    /* =========================-->
+<!--       DOWNLOAD-->
+<!--    ========================= */-->
+<!--    function downloadCode() {-->
+<!--        const code = editor.getValue();-->
+<!--        const lang = document.getElementById("lang").value;-->
+
+<!--        const ext = {-->
+<!--            java: "java",-->
+<!--            python: "py",-->
+<!--            cpp: "cpp",-->
+<!--            c: "c",-->
+<!--            js: "js"-->
+<!--        };-->
+
+<!--        const blob = new Blob([code], { type: "text/plain" });-->
+<!--        const a = document.createElement("a");-->
+
+<!--        a.href = URL.createObjectURL(blob);-->
+<!--        a.download = "code." + ext[lang];-->
+<!--        a.click();-->
+<!--    }-->
+
+<!--    /* =========================-->
+<!--       SHARE-->
+<!--    ========================= */-->
+<!--    function shareCode() {-->
+<!--        const code = btoa(editor.getValue());-->
+<!--        const url = window.location.origin + "?code=" + code;-->
+<!--        prompt("Copy link:", url);-->
+<!--    }-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
