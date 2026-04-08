@@ -5,6 +5,17 @@ public class CodeRequest {
     private String input;
     private String language;
 
+    public CodeRequest(){
+
+    }
+
+
+    public CodeRequest(String code, String input, String language) {
+        this.code = code;
+        this.input = input;
+        this.language = language;
+    }
+
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
 
