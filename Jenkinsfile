@@ -5,7 +5,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'chmod +x mvnw'
+                sh 'chmod +x mvnw || true'
                 sh './mvnw clean package'
             }
         }
@@ -20,7 +20,7 @@ pipeline {
             steps {
                 sh 'docker stop codeexec || true'
                 sh 'docker rm codeexec || true'
-                sh 'docker run -d -p 8080:8080 --name codeexec codeexec:v1'
+                sh 'docker run -d -p 8082:8080 --name codeexec codeexec:v1'
             }
         }
     }
